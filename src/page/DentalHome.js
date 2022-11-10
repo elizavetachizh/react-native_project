@@ -4,9 +4,9 @@ import { Ionicons } from "@expo/vector-icons";
 import styled from "styled-components/native";
 
 import axios from "axios";
-import { Swipeable } from "react-native-gesture-handler";
+import Swipeable from "react-native-gesture-handler/Swipeable";
 import Appointment from "../components/Appointment";
-import {SectionTitle} from "../styles/Appointment";
+import { SectionTitle } from "../styles/Appointment";
 
 const HomeScreen = (props) => {
   const { navigation } = props;
@@ -29,13 +29,30 @@ const HomeScreen = (props) => {
           sections={data}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
+            <Swipeable
+              rightButtons={[
+                <SwipeViewButton style={{ backgroundColor: "#B4C1CB" }}>
+                  <Ionicons name="md-create" size={28} color="white" />
+                </SwipeViewButton>,
+                <SwipeViewButton
+                  onPress={() => console.log("hello")}
+                  style={{ backgroundColor: "#F85A5A" }}
+                >
+                  <Ionicons name="ios-close" size={48} color="white" />
+                </SwipeViewButton>,
+              ]}
+
+            >
               <Appointment
                 navigate={navigation.navigate}
                 item={item}
                 user={item.user}
               />
+            </Swipeable>
           )}
-          renderSectionHeader={({ section: { title } }) => <SectionTitle>{title} ноября</SectionTitle>}
+          renderSectionHeader={({ section: { title } }) => (
+            <SectionTitle>{title} ноября</SectionTitle>
+          )}
         />
       )}
     </Container>

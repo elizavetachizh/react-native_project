@@ -3,16 +3,16 @@ import styled from "styled-components/native";
 export const GroupItem = styled.TouchableOpacity`
   align-items: center;
   flex-direction: row;
-  padding: 20px;
-  border-bottom-width: 1px;
-  border-bottom-color: #f3f3f3;
+  padding: 10px 20px;
+  margin: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
 `;
 
 export const FullName = styled.Text`
   font-weight: 600;
   font-size: 16px;
 `;
-
 
 export const SectionTitle = styled.Text`
   font-weight: 800;
