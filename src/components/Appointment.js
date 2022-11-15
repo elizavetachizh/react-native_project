@@ -1,18 +1,30 @@
 import React from "react";
-import {Image, Text, View} from "react-native";
-import styled from "styled-components/native";
+import { View } from "react-native";
 import { GrayText } from "../styles/PatientScreen";
-import {FullName, GroupItem} from "../styles/Appointment";
+import { Avatar, FullName, GroupItem, Letter } from "../styles/Appointment";
 import Badge from "../styles/Badge";
+import getAvatarColor from "../utils/getAvatarColor";
 
-const Appointment = ({ navigate, item, user }) => {
-  const { about, active, time } = item;
+const Appointment = ({ navigate, item }) => {
+  //передача необходимых данных и базы
+  const { patient, diagnosis, active, time } = item;
+  //подключение функции изменения иконки
+  const avatarColors = getAvatarColor(patient.fullName[0].toUpperCase());
   return (
     <GroupItem onPress={navigate.bind(this, "Patient", item)}>
+      <Avatar
+        style={{
+          backgroundColor: avatarColors.background,
+        }}
+      >
+        <Letter style={{ color: avatarColors.color }}>
+          {patient.fullName[0].toUpperCase()}
+        </Letter>
+      </Avatar>
       <View style={{ flex: 1 }}>
-        <FullName>{user.fullName}</FullName>
-          <Image source={{uri: user.picture}} style={{width:100, height:100}} />
-        <GrayText>{about}</GrayText>
+        <FullName>{patient.fullName}</FullName>
+        <GrayText>{diagnosis}</GrayText>
+        <GrayText>{patient.email}</GrayText>
       </View>
       {time && <Badge active={active}>{time}</Badge>}
     </GroupItem>
@@ -23,23 +35,5 @@ Appointment.defaultProps = {
   groupTitle: "Untitled",
   items: [],
 };
-
-const Letter = styled.Text`
-  font-size: 20px;
-  font-weight: bold;
-  margin-top: -1px;
-`;
-
-
-
-const Avatar = styled.View`
-  align-items: center;
-  justify-content: center;
-  border-radius: 50px;
-  width: 40px;
-  height: 40px;
-  margin-right: 15px;
-`;
-
 
 export default Appointment;

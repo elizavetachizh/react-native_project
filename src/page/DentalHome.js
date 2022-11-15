@@ -1,26 +1,71 @@
 import React, { useState, useEffect } from "react";
-import { SectionList, Alert, TouchableOpacity, View, Text } from "react-native";
+import {
+  SectionList,
+  TouchableOpacity,
+  RefreshControl,
+  Alert,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import styled from "styled-components/native";
-
-import axios from "axios";
-import Swipeable from "react-native-gesture-handler/Swipeable";
 import Appointment from "../components/Appointment";
-import { SectionTitle } from "../styles/Appointment";
+import { SectionTitle, SwipeViewButton } from "../styles/Appointment";
+import { appointmentsApi } from "../utils/api";
+import PlusButton from "../components/PlusButton";
+import { Container } from "../styles/Container";
+import Swipeable from "react-native-gesture-handler/Swipeable";
 
 const HomeScreen = (props) => {
   const { navigation } = props;
   const [data, setData] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  useEffect(() => {
-    axios.get("https://trycode.pw/c/F0LMH.json").then(({ data }) => {
-      setData(data);
-    });
-  }, []);
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchAppointments = () => {
+    setIsLoading(true);
+    appointmentsApi
+      .get()
+      .then(({ data }) => {
+        setData(data.data);
+        setIsLoading(false);
+      })
+      .catch((e) => {
+        console.log(e);
+        setIsLoading(false);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  useEffect(fetchAppointments, []);
   // TODO: Продумать удаление приемов
+
+  const removeAppointment = (id) => {
+    Alert.alert(
+      "Удаление приема",
+      "Вы действительно хотите удалить прием?",
+      [
+        {
+          text: "Отмена",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "Удалить",
+          onPress: () => {
+            setIsLoading(true);
+            appointmentsApi
+              .remove(id)
+              .then(() => {
+                fetchAppointments();
+              })
+              .catch(() => {
+                setIsLoading(false);
+              });
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
 
   return (
     <Container>
@@ -28,20 +73,30 @@ const HomeScreen = (props) => {
         <SectionList
           sections={data}
           keyExtractor={(item) => item._id}
+          refreshControl={
+            <RefreshControl
+              refreshing={isLoading}
+              onRefresh={fetchAppointments}
+            />
+          }
+          refreshing={isLoading}
           renderItem={({ item }) => (
             <Swipeable
-              rightButtons={[
-                <SwipeViewButton style={{ backgroundColor: "#B4C1CB" }}>
-                  <Ionicons name="md-create" size={28} color="white" />
-                </SwipeViewButton>,
-                <SwipeViewButton
-                  onPress={() => console.log("hello")}
-                  style={{ backgroundColor: "#F85A5A" }}
-                >
-                  <Ionicons name="ios-close" size={48} color="white" />
-                </SwipeViewButton>,
-              ]}
-
+              renderRightActions={() => {
+                return (
+                  <>
+                    <SwipeViewButton style={{ backgroundColor: "#B4C1CB" }}>
+                      <Ionicons name="md-create" size={28} color="white" />
+                    </SwipeViewButton>
+                    <SwipeViewButton
+                      onPress={removeAppointment.bind(this, item._id)}
+                      style={{ backgroundColor: "#F85A5A" }}
+                    >
+                      <Ionicons name="ios-close" size={48} color="white" />
+                    </SwipeViewButton>
+                  </>
+                );
+              }}
             >
               <Appointment
                 navigate={navigation.navigate}
@@ -51,41 +106,13 @@ const HomeScreen = (props) => {
             </Swipeable>
           )}
           renderSectionHeader={({ section: { title } }) => (
-            <SectionTitle>{title} ноября</SectionTitle>
+            <SectionTitle>{title}</SectionTitle>
           )}
         />
       )}
+      <PlusButton onPress={navigation.navigate.bind(this, "AddPatient")} />
     </Container>
   );
 };
-
-HomeScreen.navigationOptions = ({ navigation }) => ({
-  title: "Журнал приёмов",
-  headerTintColor: "#2A86FF",
-  headerStyle: {
-    elevation: 0.8,
-    shadowOpacity: 0.8,
-  },
-  headerRight: () => (
-    <TouchableOpacity
-      onPress={navigation.navigate.bind(this, "Patients")}
-      style={{ marginRight: 20 }}
-    >
-      <Ionicons name="md-people" size={28} color="black" />
-    </TouchableOpacity>
-  ),
-});
-
-const SwipeViewButton = styled.TouchableOpacity`
-  width: 75px;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Container = styled.View`
-  flex: 1;
-`;
 
 export default HomeScreen;

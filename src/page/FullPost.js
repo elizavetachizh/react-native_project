@@ -8,11 +8,12 @@ export const FullPostScreen = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState();
   const { id, title } = route.params;
-  console.log(route);
+
   useEffect(() => {
     navigation.setOptions({
       title,
     });
+    console.log(id);
     axios
       .get("https://5c3755177820ff0014d92711.mockapi.io/articles/" + id)
       .then(({ data }) => {

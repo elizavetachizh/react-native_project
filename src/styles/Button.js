@@ -14,3 +14,9 @@ export const ButtonText = styled.Text`
   font-weight: 400;
   font-size: 16px;
 `;
+
+export const ButtonView = styled.View`
+  flex: 1;
+  margin-top: 30px;
+  padding: 0 15px;
+`;

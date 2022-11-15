@@ -25,8 +25,7 @@ export const AppointmentCardRow = styled.View`
 `;
 
 export const AppointmentCard = styled.View`
-  elevation: 0.5;
-  box-shadow: 3px 3px rgba(0,0,0, 0.2);
+  box-shadow: 1px 1px rgba(0,0,0, 0.2);
   padding: 20px 25px;
   border-radius: 10px;
   background: white;
@@ -34,11 +33,11 @@ export const AppointmentCard = styled.View`
 `;
 
 export const PatientDetails = styled(Container)`
-  flex: 0.3;
+  flex: 0.2;
 `;
 
 export const PatientAppointments = styled.View`
-  flex: 1;
+  flex: 1.4;
   background: #f8fafd;
 `;
 
