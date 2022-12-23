@@ -22,7 +22,7 @@ const Appointment = ({ navigate, item }) => {
         </Letter>
       </Avatar>
       <View style={{ flex: 1 }}>
-        <FullName>{patient.fullName}</FullName>
+        <FullName>{patient && patient.fullName}</FullName>
         <GrayText>{diagnosis}</GrayText>
         <GrayText>{patient.email}</GrayText>
       </View>

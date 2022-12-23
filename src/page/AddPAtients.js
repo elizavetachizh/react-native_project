@@ -10,8 +10,8 @@ import { BlockAddAppointment } from "../styles/AddAppointments";
 
 //компонент создания нового клиента с полями
 export default function AddPatients({ route, navigation }) {
-  const [values, setValues] = useState({});
 
+  const [values, setValues] = useState({});
   const handleChange = (name, e) => {
     const text = e.nativeEvent.text;
     setValues({
@@ -63,7 +63,6 @@ export default function AddPatients({ route, navigation }) {
           onChange={handleChange.bind(this, "phone")}
           value={values.phone}
           keyboardType="phone-pad"
-          pla
           dataDetectorTypes="phoneNumber"
           placeholder="+375ХХХХХХХХХ"
           style={{ marginTop: 12 }}
