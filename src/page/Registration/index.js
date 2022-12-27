@@ -9,9 +9,6 @@ import { Input } from "native-base";
 import React, { useContext, useState } from "react";
 import { BlockAddAppointment } from "../../styles/AddAppointments";
 import { Ionicons } from "@expo/vector-icons";
-import { usersApi } from "../../utils/api";
-import { Container } from "../../styles/Container";
-import { ButtonView } from "../../styles/Button";
 import axios from "axios";
 import KeyboardAvoidingWrapper from "../../components/KeyboardAvoidingWrapper";
 import { Formik } from "formik";
@@ -35,22 +32,11 @@ export default function SignUp({ navigation, route }) {
       .then((res) => {
         const result = res.data;
         const { message, status, data } = result;
-        // console.log(`mess`, message);
-        // console.log("res", result);
-        // console.log("cred", credentials);
         if (status !== "PENDING") {
-          // console.log("ERROR", message, status);
           handleMessage(message, status);
-          // console.log("mess2", message);
-          // }
-          // else if (status === "PENDING") {
-          //   navigation.navigate("LinkVerification");
         } else {
-
-          navigation.navigate("LinkVerification", { ...data });
-          // console.log("access", result);
-          // persistLogin({ ...data }, message, status);
-          // navigation.navigate("Домашняя страница", { ...data });
+          temporaryUserPersist(({ email, name } = credentials));
+          navigation.navigate("OTPVerification", { ...data });
         }
         setSubmitting(false);
       })
@@ -70,7 +56,6 @@ export default function SignUp({ navigation, route }) {
   };
 
   const handleMessage = (message, type = "FAILED") => {
-    // console.log("mess3", message);
     setMessage(message);
     setMessageType(type);
   };

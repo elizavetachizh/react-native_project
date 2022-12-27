@@ -1,7 +1,7 @@
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 import { ActivityIndicator, Button, Text } from "react-native";
 import CodeInputField from "../components/CodeInputField";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "../core/axios";
 import ModalVerification from "../components/ModalVerification";
 import { CredentialsContext } from "../components/CreadentialsContext";
@@ -51,9 +51,10 @@ export default function OTPVerification({ navigation, route }) {
   const submitOTPVerification = async () => {
     try {
       setVerifying(true);
-      const url = "http://localhost:5500/user/resendVerificationLink";
+      const url = "http://172.17.47.139:5500/user/userOTPPost";
       const result = await axios.post(url, { userId, otp: code });
       const { data } = result;
+      console.log(`data`, data);
       if (data.status !== "VERIFIED") {
         setRequestMessage(data.message);
         setVirificationSuccessful(false);
@@ -69,6 +70,7 @@ export default function OTPVerification({ navigation, route }) {
       setVerifying(false);
     }
   };
+
   return (
     <KeyboardAvoidingWrapper>
       <>
@@ -81,10 +83,11 @@ export default function OTPVerification({ navigation, route }) {
           setCode={setCode}
           maxLength={MAX_CODE_LENGTH}
         />
+        {!verifying && !pinReady && <Button title={"verify"} disabled={true} />}
         {!verifying && pinReady && (
           <Button title={"verify"} onPress={submitOTPVerification} />
         )}
-        {verifying && !pinReady && <Button title={"verify"} />}
+
         {verifying && (
           <>
             <Button

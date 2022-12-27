@@ -19,6 +19,8 @@ import SignUp from "../page/Registration";
 import { CredentialsContext } from "../components/CreadentialsContext";
 import LinkVerification from "../page/LinkVerification";
 import OTPVerification from "../page/OTPVerification";
+import ForgotPassword from "../page/ForgotPassword";
+import RestorePassword from "../page/RestorePassword";
 const Stack = createNativeStackNavigator();
 export default function Routes({ navigation }) {
   const loadPage = () => {
@@ -103,20 +105,29 @@ export default function Routes({ navigation }) {
                     options={{ title: "Login" }}
                   />
                   <Stack.Screen
+                    name={"ForgotPassword"}
+                    component={ForgotPassword}
+                    options={{ title: "Забыли пароль?" }}
+                  />
+                  <Stack.Screen
+                    name={"RestorePassword"}
+                    component={RestorePassword}
+                  />
+                  <Stack.Screen
                     name={"SignUp"}
                     component={SignUp}
                     options={{ title: "SignUp" }}
                   />
-                  <Stack.Screen
-                    name={"LinkVerification"}
-                    component={LinkVerification}
-                    options={{ title: "LinkVerification" }}
-                  />
                   {/*<Stack.Screen*/}
-                  {/*  name={"OTPVerification"}*/}
-                  {/*  component={OTPVerification}*/}
-                  {/*  options={{ title: "OTPVerification" }}*/}
+                  {/*  name={"LinkVerification"}*/}
+                  {/*  component={LinkVerification}*/}
+                  {/*  options={{ title: "LinkVerification" }}*/}
                   {/*/>*/}
+                  <Stack.Screen
+                    name={"OTPVerification"}
+                    component={OTPVerification}
+                    options={{ title: "OTPVerification" }}
+                  />
                 </>
               )}
             </Stack.Navigator>

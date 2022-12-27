@@ -2,7 +2,6 @@ import {
   ActivityIndicator,
   Button,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -14,7 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import KeyboardAvoidingWrapper from "../../components/KeyboardAvoidingWrapper";
 import axios from "axios";
 // Google Signin
-import * as Google from 'expo-google-app-auth';
+import * as Google from "expo-google-app-auth";
 import * as WebBrowser from "expo-web-browser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CredentialsContext } from "../../components/CreadentialsContext";
@@ -73,11 +72,8 @@ export default function Login({ navigation, route }) {
         const result = res.data;
         const { message, status, data } = result;
         if (status !== "SUCCESS") {
-          console.log("ERROR", message, status);
           handleMessage(message, status);
-          console.log("mess2", message);
         } else {
-          console.log("access", result);
           persistLogin({ ...data[0] }, message, status);
           // navigation.navigate("Домашняя страница", { ...data[0] });
         }
@@ -192,8 +188,14 @@ export default function Login({ navigation, route }) {
               {isSubmitting ? (
                 <ActivityIndicator size={"large"} />
               ) : (
-                <Button onPress={handleSubmit} title="Login" />
+                <>
+                  <Button onPress={handleSubmit} title="Login" />
+                </>
               )}
+              <Button
+                onPress={() => navigation.navigate("ForgotPassword")}
+                title="Забыли пароль?"
+              />
 
               {!googleSubmitting && (
                 <Button
@@ -243,7 +245,6 @@ export default function Login({ navigation, route }) {
 
   return (
     <View>
-      <Text>Login</Text>
       <FormikForm />
     </View>
   );
