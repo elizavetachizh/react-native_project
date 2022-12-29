@@ -11,25 +11,21 @@ import { NativeBaseProvider } from "native-base/src/core/NativeBaseProvider";
 import AddAppointmentScreen from "../page/AddAppointmentScreen";
 import PatientsScreen from "../page/PatientsScreen";
 import Posts from "../page/Posts";
-import { Button, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import PatientScreenUpdate from "../page/PatientScreenUpdate";
 import Login from "../page/Login";
 import SignUp from "../page/Registration";
 import { CredentialsContext } from "../components/CreadentialsContext";
-import LinkVerification from "../page/LinkVerification";
 import OTPVerification from "../page/OTPVerification";
 import ForgotPassword from "../page/ForgotPassword";
 import RestorePassword from "../page/RestorePassword";
 const Stack = createNativeStackNavigator();
-export default function Routes({ navigation }) {
-  const loadPage = () => {
-    navigation.navigate("Patients");
-  };
+export default function Routes() {
   return (
-    <NativeBaseProvider>
-      <CredentialsContext.Consumer>
-        {({ storedCredentials }) => (
+    <CredentialsContext.Consumer>
+      {({ storedCredentials }) => (
+        <NativeBaseProvider>
           <NavigationContainer>
             <Stack.Navigator initialRouteName={"Login"}>
               {storedCredentials ? (
@@ -132,8 +128,8 @@ export default function Routes({ navigation }) {
               )}
             </Stack.Navigator>
           </NavigationContainer>
-        )}
-      </CredentialsContext.Consumer>
-    </NativeBaseProvider>
+        </NativeBaseProvider>
+      )}
+    </CredentialsContext.Consumer>
   );
 }

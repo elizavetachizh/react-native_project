@@ -6,7 +6,7 @@ import {
   View,
 } from "react-native";
 import { Input } from "native-base";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BlockAddAppointment } from "../../styles/AddAppointments";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
@@ -25,7 +25,7 @@ export default function SignUp({ navigation, route }) {
   const { storedCredentials, setStoredCredentials } =
     useContext(CredentialsContext);
 
-  const handleSignUp = (credentials, setSubmitting) => {
+  const handleSignUp = async (credentials, setSubmitting) => {
     const url = "http://172.17.47.139:5500/user/registration";
     axios
       .post(url, credentials)
@@ -36,12 +36,14 @@ export default function SignUp({ navigation, route }) {
           handleMessage(message, status);
         } else {
           temporaryUserPersist(({ email, name } = credentials));
+
           navigation.navigate("OTPVerification", { ...data });
+
         }
         setSubmitting(false);
       })
       .catch((error) => {
-        // console.log(error);
+        console.log(error);
         setSubmitting(false);
         handleMessage("Произошла ошибка, попробуйете отправить данные еще раз");
       });
@@ -72,13 +74,14 @@ export default function SignUp({ navigation, route }) {
         console.log(error);
       });
   };
-
+  useEffect(() => {
+    console.log(storedCredentials);
+  }, [storedCredentials]);
   const FormikForm = () => {
     return (
       <KeyboardAvoidingWrapper>
         <Formik
           initialValues={{
-            name: "",
             email: "",
             phone: "",
             password: "",
@@ -86,7 +89,6 @@ export default function SignUp({ navigation, route }) {
           }}
           onSubmit={(values, { setSubmitting }) => {
             if (
-              values.name === "" ||
               values.email === "" ||
               values.phone === "" ||
               values.password === "" ||
@@ -112,16 +114,6 @@ export default function SignUp({ navigation, route }) {
             isSubmitting,
           }) => (
             <View>
-              <ComponentTextInput
-                icon={"mail"}
-                text={"name"}
-                label={"name"}
-                placeholder={"name"}
-                onChangeText={handleChange("name")}
-                value={values.name}
-                onBlur={handleBlur("name")}
-              />
-
               <ComponentTextInput
                 icon={"mail"}
                 text={"email"}
@@ -179,7 +171,7 @@ export default function SignUp({ navigation, route }) {
               )}
 
               <View>
-                <Text>же есть аккаунт?</Text>
+                <Text>Уже есть аккаунт?</Text>
                 <Button
                   title={"Login"}
                   onPress={() => navigation.navigate("Login")}

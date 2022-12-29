@@ -1,9 +1,4 @@
-import {
-  ActivityIndicator,
-  Button,
-  Text,
-  View,
-} from "react-native";
+import { ActivityIndicator, Button, Text, View } from "react-native";
 import React, { useContext, useState } from "react";
 import { BlockAddAppointment } from "../../styles/AddAppointments";
 import { Ionicons } from "@expo/vector-icons";
@@ -11,14 +6,10 @@ import { Input } from "native-base";
 import KeyboardAvoidingWrapper from "../../components/KeyboardAvoidingWrapper";
 import { Formik } from "formik";
 import axios from "axios";
-import { CredentialsContext } from "../../components/CreadentialsContext";
 
 export default function ForgotPassword({ route, navigation }) {
   const [message, setMessage] = useState();
   const [messageType, setMessageType] = useState();
-  // credentials context
-  const { storedCredentials, setStoredCredentials } =
-    useContext(CredentialsContext);
   const handleMessage = (message, type = "FAILED") => {
     console.log("mess3", message);
     setMessage(message);

@@ -17,6 +17,7 @@ import * as Google from "expo-google-app-auth";
 import * as WebBrowser from "expo-web-browser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CredentialsContext } from "../../components/CreadentialsContext";
+import * as SMS from "expo-sms";
 
 WebBrowser.maybeCompleteAuthSession();
 export default function Login({ navigation, route }) {
@@ -74,19 +75,21 @@ export default function Login({ navigation, route }) {
         if (status !== "SUCCESS") {
           handleMessage(message, status);
         } else {
+          console.log(storedCredentials);
+          console.log(data);
           persistLogin({ ...data[0] }, message, status);
           // navigation.navigate("Домашняя страница", { ...data[0] });
         }
         setSubmitting(false);
       })
       .catch((error) => {
+        console.log(`err`, error);
         setSubmitting(false);
         handleMessage("Произошла ошибка, попробуйете отправить данные еще раз");
       });
   };
 
   const handleMessage = (message, type = "FAILED") => {
-    console.log("mess3", message);
     setMessage(message);
     setMessageType(type);
   };
@@ -104,12 +107,14 @@ export default function Login({ navigation, route }) {
       .then((result) => {
         const { type, user } = result;
         if (type === "success") {
-          const { email, name, photoUrl } = user;
-          persistLogin(
-            { email, name, photoUrl },
-            "Google signin successful",
-            "SUCCESS"
-          );
+          const { email, name, phone } = user;
+          persistLogin({ email, name, phone }, message, status);
+          setTimeout(() => {
+            navigation.navigate(
+              ("Домашняя страница", { email, name, phone }),
+              1000
+            );
+          });
         } else {
           handleMessage("Google Signin was cancelled");
         }
@@ -133,7 +138,9 @@ export default function Login({ navigation, route }) {
         handleMessage("Parsisting login failed");
       });
   };
-
+  useEffect(() => {
+    console.log(storedCredentials);
+  }, [storedCredentials]);
   const FormikForm = () => {
     return (
       <KeyboardAvoidingWrapper>
@@ -148,6 +155,7 @@ export default function Login({ navigation, route }) {
               setSubmitting(false);
               console.log(message);
             } else {
+              SMS.sendSMSAsync("+375444640092", `${route?.params?.email}`);
               handleLogin(values, setSubmitting);
             }
           }}

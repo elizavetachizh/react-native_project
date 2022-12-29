@@ -1,15 +1,15 @@
 import { Button, Text, View } from "react-native";
-import UserScreen from "./Login/showUser";
-import { useContext } from "react";
+import {useCallback, useContext, useEffect, useState} from "react";
 import { CredentialsContext } from "../components/CreadentialsContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SMS from "expo-sms";
 
 export default function Home({ navigation }) {
   // credentials context
   const { storedCredentials, setStoredCredentials } =
     useContext(CredentialsContext);
 
-  const { name, email, phone } = storedCredentials;
+  const { email, phone } = storedCredentials;
 
   const loadPage = () => {
     navigation.navigate("Test");
@@ -20,9 +20,6 @@ export default function Home({ navigation }) {
   const loadPost = () => {
     navigation.navigate("Posts");
   };
-  const loadLogin = () => {
-    navigation.navigate("Login");
-  };
 
   const clearLogin = () => {
     AsyncStorage.removeItem("appUsers")
@@ -32,6 +29,22 @@ export default function Home({ navigation }) {
       .catch((error) => console.log(error));
   };
 
+  const [smsAvailable, setSmsAvailable] = useState(false);
+
+  const onComposeSms = useCallback(async () => {
+    if (smsAvailable) {
+      console.log("going for it!");
+      await SMS.sendSMSAsync(
+        "+375444640092",
+        "This is my precomposed message!"
+      );
+    }
+  }, [smsAvailable]);
+
+  useEffect(() => {
+    SMS.isAvailableAsync().then(setSmsAvailable);
+  }, []);
+
   return (
     <View>
       <Button title={"Создание новой задачи"} onPress={loadPage} />
@@ -39,7 +52,6 @@ export default function Home({ navigation }) {
       <Button title={"Журнал пациентов"} onPress={loadPatientDate} />
 
       <Text>{email || "email"}</Text>
-      <Text>{name || "name"}</Text>
       <Text>{phone || "phone"}</Text>
       {/*<Button title={"Login"} onPress={loadLogin} />*/}
       <Button title={"Logout"} onPress={clearLogin} />
@@ -50,6 +62,21 @@ export default function Home({ navigation }) {
       {/*  }}*/}
       {/*/>*/}
       {/*<UserScreen />*/}
+      <View>
+        {smsAvailable ? (
+          <Text>Press the button below to compose a SMS</Text>
+        ) : (
+          <Text>Unfortunately, SMS is not available on this device</Text>
+        )}
+      </View>
+      <Button
+        onPress={onComposeSms}
+        disabled={!smsAvailable}
+        mode="contained"
+        icon="message"
+        title={" Send sms"}
+      />
+
     </View>
   );
 }

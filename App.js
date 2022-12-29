@@ -1,9 +1,9 @@
+import React, { useState } from "react";
 import Routes from "./src/utils/routers";
-
 import AppLoading from "expo-app-loading";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CredentialsContext } from "./src/components/CreadentialsContext";
-import { useState } from "react";
+
 export default function App() {
   const [appReady, setAppReady] = useState(false);
   const [storedCredentials, setStoredCredentials] = useState("");
@@ -31,7 +31,7 @@ export default function App() {
 
   return (
     <CredentialsContext.Provider
-      value={{ storedCredentials, setStoredCredentials }}
+      value={{storedCredentials, setStoredCredentials}}
     >
       <Routes />
     </CredentialsContext.Provider>

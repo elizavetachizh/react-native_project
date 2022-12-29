@@ -18,7 +18,7 @@ export default function OTPVerification({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [verificationSuccessful, setVirificationSuccessful] = useState(false);
   const [requestMessage, setRequestMessage] = useState("");
-  const { userId, email } = route?.params;
+  const { userId, email, phone } = route?.params;
   // const resendEmail = async () => {
   //   setResendingEmail(true);
   //
@@ -39,22 +39,12 @@ export default function OTPVerification({ navigation, route }) {
   const { storedCredentials, setStoredCredentials } =
     useContext(CredentialsContext);
 
-  const persistLoginAfterOTPVerification = async () => {
-    try {
-      const tempUser = await AsyncStorage.getItem("tempUser");
-      await AsyncStorage.setItem("appUsers", JSON.stringify(tempUser));
-      setStoredCredentials(JSON.parse(tempUser));
-    } catch (error) {
-      alert(`Ошибка в отпавке данных ${error.message}`);
-    }
-  };
   const submitOTPVerification = async () => {
     try {
       setVerifying(true);
       const url = "http://172.17.47.139:5500/user/userOTPPost";
       const result = await axios.post(url, { userId, otp: code });
       const { data } = result;
-      console.log(`data`, data);
       if (data.status !== "VERIFIED") {
         setRequestMessage(data.message);
         setVirificationSuccessful(false);
@@ -70,6 +60,15 @@ export default function OTPVerification({ navigation, route }) {
       setVerifying(false);
     }
   };
+  const persistLoginAfterOTPVerification = async () => {
+    try {
+      const tempUser = await AsyncStorage.getItem("tempUser");
+      await AsyncStorage.setItem("appUsers", JSON.stringify(tempUser));
+      setStoredCredentials(JSON.parse(tempUser));
+    } catch (error) {
+      alert(`Ошибка в отпавке данных ${error.message}`);
+    }
+  };
 
   return (
     <KeyboardAvoidingWrapper>
@@ -77,6 +76,7 @@ export default function OTPVerification({ navigation, route }) {
         <Text>Account Verification</Text>
         <Text>Please enter the 4-digit code sent to</Text>
         <Text> {`${email}`}</Text>
+        <Text> {`${phone}`}</Text>
         <CodeInputField
           setPinReady={setPinReady}
           code={code}
